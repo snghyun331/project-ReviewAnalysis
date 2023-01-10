@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>베댓 - 댓글 분석 프로젝트</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <!--    <link href="../static/styles.css" rel="stylesheet"/>-->
+    <link href="../static/style02.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!--    -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <!--    -->
+
+    <style type="text/css">
+        .gamja_flower {
+            font-family: 'Gamja Flower', cursive;
+            font-size: 1.5em;
+        }
+
+        .title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2em;
+            color: #FFBF00;
+        }
+
+        .subtitle {
+            font-family: 'Do Hyeon', sans-serif;
+            font-size: 0.7em;
+        }
+
+        .glanlink {
+            color: black;
+        }
+
+        .help-tip {
+
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            text-align: center;
+            background-color: #BCDBEA;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 26px;
+            cursor: default;
+        }
+
+        .help-tip:before {
+            content: '?';
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .help-tip:hover p {
+            display: block;
+            transform-origin: 100% 0%;
+            -webkit-animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .help-tip p {
+            display: none;
+            text-align: left;
+            background-color: #1E2021;
+            padding: 20px;
+            width: 300px;
+            position: absolute;
+            border-radius: 3px;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            right: -4px;
+            color: #FFF;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .help-tip p:before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-bottom-color: #1E2021;
+            right: 10px;
+            top: -12px;
+        }
+
+        .help-tip p:after {
+            width: 100%;
+            height: 40px;
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 0;
+        }
+
+        @-webkit-keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.6);
+            }
+
+            100% {
+                opacity: 100%;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 100%;
+            }
+
+        }
+
+        p {
+            margin: 0px;
+            display: inline-block;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        <!--
+        -->
+
+    </style>
+    <script>
+        $(document).ready(function () {
+            get_url();
+
+        });
+
+        function get_url() {
+            let des = {}
+            $.ajax({
+                type: "GET",
+                url: "/api/movie_statics",
+                data: {},
+                success: function (response) { // 성공하면
+                    des = response
+                    $('#netizen_rating').text(des['네티즌평점'] + "  / 10")
+                    $('#sentences').text(des['문장'])
+                }
+            })
+        }
+
+
+    </script>
+
+
+</head>
+<body>
+<script>
+
+</script>
+
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand title" href="#!">베댓 &nbsp;<span class="subtitle">-&nbsp;영화 리뷰</span></a>
+        <div class="help-tip" style="z-index:1;">
+            <p>댓글/리뷰 분석 사이트인 "베댓"을 이용해주셔서 감사합니다.<br>영화 분석 시 제공하는 것들
+                <br>-기타등등 설명들!</p>
+        </div>
+    </div>
+</nav>
+<main class="main users chart-page" id="skip-target">
+    <div class="container_2">
+        <h2 class="main-title dohyeon_title">리뷰 분석 결과 &nbsp; &nbsp;<span style="font-size:0.7em;" id="title">
+
+        </span>
+        </h2>
+        <!--        성별 분포 및 나이 분포-->
+        <div class="row stat-cards">
+            <!--            성별 분포-->
+            <!--            <div class="col-md-6 col-xl-3">-->
+            <div class="col-md-6 col-xl-3">
+                <article class="stat-cards-item">
+                    <h4 style="margin-bottom:20px;">네티즌 평점</h4>
+                    <div class="container_2">
+                        <div class="column">
+                            <!--                            <div class="sex"></div>-->
+                            <h5 style="margin-bottom:15px;">네티즌 평점</h5>
+                            <div class="gamja_flower" style="padding-top:10px; margin-left:20px;"
+                                 id="netizen_rating"></div>
+                            <!--                            {%for item in dict_1%}-->
+                            <!--                                <li>{{item}}</li>-->
+                            <!--                            {% endfor %}-->
+                            <h5 style="margin-botton:15px;"></h5>
+                            <div class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                                 id="reporter_rating"></div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <!--            <div class="col-md-6 col-xl-3">-->
+            <div class="col-md-6 col-xl-3">
+                <article class="stat-cards-item">
+                    <h4 style="margin-bottom:20px;">성별·나이별 관람추이</h4>
+                    <div class="container_2">
+                        <!--                        <div class="column" style="justify-content:center; align-items:center; display:flex;">-->
+                        <div class="column">
+                            <!--                            <div class="sex"></div>-->
+                            <h5 style="margin-botton:15px;">성별 관람추이</h5>
+                            <div class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                                 id="sex_ratio">
+
+                            </div>
+                            <h5 style="margin-botton:15px;">나이별 관람추이</h5>
+                            <div class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                                 id="age_ratio"></div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+            <!--            <div class="col-md-6 col-xl-3">-->
+            <div class="col-md-6 col-xl-3">
+                <article class="stat-cards-item">
+                    <h4 style="margin-bottom:20px;">성별·나이별 만족도</h4>
+                    <div class="container_2">
+                        <!--                        <div class="column" style="justify-content:center; align-items:center; display:flex;">-->
+                        <div class="column">
+                            <!--                            <div class="sex"></div>-->
+                            <h5 style="margin-botton:15px;">성별 만족도</h5>
+                            <div class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                                 id="sex_satisfaction"></div>
+                            <h5 style="margin-botton:15px;">나이별 만족도</h5>
+                            <div class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                                 id="age_satisfaction"></div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+            <!--            나이 분포-->
+            <!--            <div class="col-md-6 col-xl-3">-->
+            <div class="col-md-6 col-xl-3">
+                <article class="stat-cards-item">
+                    <div class="container_2">
+                        <h4 style="margin-bottom:20px;">한줄평</h4>
+                        <h5 style="margin-botton:14px;" id="sentences"></h5>
+                        <h4 style="margin-bottom:40px;"></h4>
+                        <h4 style="margin-bottom:20px;">감상 포인트</h4>
+                        <div id="barchart" style="height:200px;"></div>
+                    </div>
+                </article>
+            </div>
+        </div>
+
+        <!--       토픽분석결과 -->
+        <div class="row" style="margin-top:100px;">
+            <div class="col-lg-9">
+
+                <!--     분석결과-->
+                <div class="white-block" style="height:638px; margin-left:5px;">
+                    <h4 style="margin-bottom:20px;"> 토픽 분석 : 주제별 평점 </h4>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic1">#토픽1</span>
+                                <div class="words">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic2">#토픽2</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic3">#토픽3</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic4">#토픽4</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic5">#토픽5</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic6">#토픽6</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic7">#토픽7</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic8">#토픽8</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!--            댓글의 토픽 리스트-->
+            <div class="col-lg-3">
+                <article class="white-block">
+                    <div class="top-cat-title">
+                        <h3>본 뉴스 댓글 토픽</h3>
+                        <p id="num_comments">1400 Replies</p>
+                    </div>
+                    <ul class="top-cat-list">
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Lifestyle <span class="purple">8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Daily lifestyle articles <span class="purple">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Tutorials <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Coding tutorials <span class="blue">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Technology <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Dailiy technology articles <span class="danger">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    UX design <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    UX design tips <span class="success">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Interaction tips <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Interaction articles <span class="warning">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    App development <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Mobile development articles <span class="warning">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Nature <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Wildlife animal articles <span class="warning">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Geography <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Geography articles <span class="primary">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    Geography <span>8.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    Geography articles <span class="primary">+472</span>
+                                </div>
+                            </a>
+                        </li>
+
+                    </ul>
+                </article>
+            </div>
+        </div>
+
+    </div>
+
+    <!--    작성 시간 분포도 및 워드 클라우드-->
+    <div class="white-block container_2" style="margin-top:350px; height:400px;">
+        <div class="row">
+            <!--            작성시간 분포도-->
+            <div class="col-xl-7">
+                <h4 style="margin-bottom:20px;">댓글 작성 시간 분포</h4>
+                <div id="areachart"></div>
+
+
+            </div>
+            <!--            워드 클라우드-->
+            <div class="col-xl-5" id="wordcloud_image" style="overflow:hidden; positon:relative;">
+                <h4 style="margin-bottom:20px; position:absolute;  z-index:1;">워드 클라우드</h4>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+</body>
+</html>

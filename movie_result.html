@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>베댓 - 댓글 분석 프로젝트</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <!-- Core theme CSS (includes Bootstrap)-->
+<!--    <link href="../static/styles.css" rel="stylesheet"/>-->
+    <link href="../static/style02.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <!--    -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <!--    -->
+
+    <style type="text/css">
+        .title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2em;
+            color: #FFBF00;
+        }
+        .subtitle{
+            font-family: 'Do Hyeon', sans-serif;
+            font-size: 0.7em;
+        }
+
+        .glanlink {
+            color: black;
+        }
+
+        .help-tip {
+
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            text-align: center;
+            background-color: #BCDBEA;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 26px;
+            cursor: default;
+        }
+
+        .help-tip:before {
+            content: '?';
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .help-tip:hover p {
+            display: block;
+            transform-origin: 100% 0%;
+            -webkit-animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .help-tip p {
+            display: none;
+            text-align: left;
+            background-color: #1E2021;
+            padding: 20px;
+            width: 300px;
+            position: absolute;
+            border-radius: 3px;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            right: -4px;
+            color: #FFF;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .help-tip p:before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-bottom-color: #1E2021;
+            right: 10px;
+            top: -12px;
+        }
+
+        .help-tip p:after {
+            width: 100%;
+            height: 40px;
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 0;
+        }
+
+        @-webkit-keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.6);
+            }
+
+            100% {
+                opacity: 100%;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 100%;
+            }
+
+        }
+
+<!---->
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            vertical-align:middle;
+        }
+
+        /* Hide default HTML checkbox */
+        .switch input {
+            display:none;
+        }
+
+        /* The slider */
+        .slider {
+          position: absolute;
+          cursor: pointer;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ccc;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        .slider:before {
+          position: absolute;
+          content: "";
+          height: 26px;
+          width: 26px;
+          left: 4px;
+          bottom: 4px;
+          background-color: white;
+          -webkit-transition: .4s;
+          transition: .4s;
+        }
+
+        input:checked + .slider {
+          background-color: #2196F3;
+        }
+
+        input:focus + .slider {
+          box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+          -webkit-transform: translateX(26px);
+          -ms-transform: translateX(26px);
+          transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+          border-radius: 34px;
+        }
+
+        .slider.round:before {
+          border-radius: 50%;
+        }
+
+        p {
+            margin:0px;
+            display:inline-block;
+            font-size:15px;
+            font-weight:bold;
+        }
+<!---->
+
+    </style>
+    <script>
+<!--    수정하고 있습니다-->
+
+        $(document).ready(function () {
+            get_url();
+        });
+         function get_url() {
+
+            $.ajax({
+                type: "GET",
+                url: "/api/check",
+                data: {},
+                success: function (response) { // 성공하면
+                    let url = response['url']
+                    alert(url)
+                }
+            })
+        }
+
+<!--        -->
+<!--        var check = $("input[type='checkbox']");-->
+<!--        check.click(function(){-->
+<!--            $("p").toggle();-->
+<!--        });-->
+<!--        -->
+
+                var colors = ['#D9C7D2', '#C5A2BC', '#506358', '#88A185', '#CAD2B8', '#E2E3CE']
+
+        $(document).ready(function () {
+            get_statics();
+            contention();
+        });
+
+        //파이차트1 여자
+        function color1(i) {
+            $(".sex").css({
+                "background": "conic-gradient(#debcbb 0% " + i + "%, #ffffff " + i + "% 100%)"
+
+            });
+        }
+        //파이차트2 남자
+        function color2(i) {
+            $(".sex").css({
+                "background": "conic-gradient(#debcbb 0% 25%, #c0cdd3 25% " + i + "%, #ffffff " + i + "% 100%)"
+
+            });
+        }
+
+        // 기술통계 (성별, 나이별) 를 서버로부터 가져오고 파이차트와 바차트를 그리는 함수
+        function get_statics() {
+
+            let des = {}
+
+            $.ajax({
+                type: "GET",
+                url: "/api/statics",
+                data: {},
+                success: function (response) { // 성공하면
+                    des = response
+                    // 기술통계 파트를 딕셔너리 형태로 가져온뒤, 각 파트에 맞게 %를 떼고 str->int로 변경
+                    let male = Number(des['남성 비율'].slice(0, -1));
+                    let female = Number(des['여성 비율'].slice(0, -1));
+                    let _10 = Number(des['10대 비율'].slice(0, -1));
+                    let _20 = Number(des['20대 비율'].slice(0, -1));
+                    let _30 = Number(des['30대 비율'].slice(0, -1));
+                    let _40 = Number(des['40대 비율'].slice(0, -1));
+                    let _50 = Number(des['50대 비율'].slice(0, -1));
+                    let _60 = Number(des['60대 이상'].slice(0, -1));
+
+                    // 댓글 작성자 성별 비율 파이차트를 그린다
+                    draw_pie(male)
+
+                    // 남녀 비율이 각 몇 퍼센트인지 표시해준다.
+                    $('#sex_ratio').append(`
+                                    <div class='box male'></div> &nbsp;남 ${male}%
+                                    <br></br>
+                                    <div class='box female'></div>&nbsp;여 ${female}%`)
+
+                    draw_bar(_10, _20, _30, _40, _50, _60)
+
+                    set_react(70)
+
+                }
+            });
+        }
+
+
+        // 나이 분포 막대그래프를 그리는 함수 (get_statics)
+        function draw_bar(_10, _20, _30, _40, _50, _60) {
+            c3.generate({
+                    bindto: '#barchart',
+                    data: {
+                        columns: [
+                            ['%', _10, _20, _30, _40, _50, _60]
+                        ],
+                        type: 'bar',
+                        color: function (color, d) {
+                            return colors[d.index];
+                        }
+                    },
+                    bar: {
+                        width: {
+                            ratio: 0.4
+                        }
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            categories: ['10대', '20대', '30대', '40대', '50대', '60대 이상']
+                        },
+                        y: {
+                            max: 100,
+                            min: 0,
+                            padding: {
+                                top: 0,
+                                bottom: 0
+                            },
+                            tick: {
+                                count: 6
+                            }
+                        }
+                    },
+                    tooltop: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    },
+                    padding: {
+                        bottom: 20,
+                        top: 20
+                    }
+                }
+            );
+        }
+
+        // 댓글 작성 시간 분포도를 그리는 함수 (contention)
+        function draw_area(label, time_val) {
+            c3.generate({
+                bindto: "#areachart",
+                data: {
+                    columns: [
+                        time_val
+                    ],
+                    type:'area-spline'
+
+                },
+                legend:{
+                    position:'right'
+                },
+                axis: {
+                        x: {
+                            type:'category',
+                            categories: label
+                        }
+                    },
+                tooltop: {
+                        show: false
+                    },
+                color:{
+                    pattern:['#6C8184']
+                }
+            });
+        }
+
+        // 성별 분포 파이차트를 그리는 함수 (get_statics)
+        function draw_pie(male) {
+            var i = 1;
+            var func1 = setInterval(function () {
+                if (i < male) {
+                    color1(i);
+                    i++;
+                } else if (i < 101) {
+                    color2(i);
+                    i++;
+                } else {
+                    clearInterval(func1);
+                }
+            }, 10);
+        }
+
+
+        //논란수치로 논란이 되는 댓글 4개 붙이는 함수 + 댓글 개수를 가져와서 '본 뉴스 댓글 토픽' 파트 밑에 붙이는 함수
+        //뉴스 타이틀을 가져오고 타이틀 클릭 시 새창에 해당 뉴스
+        // 작성시간 분포 그래프
+        function contention() {
+            $.ajax({
+                type: "GET",
+                url: "/api/contention",
+                data: {},
+                success: function (response) { // 성공하면
+                    let reply = response['contention_reply'] //논란수치순으로 정렬한 댓글 가져오기
+                    let number = response['number'] //댓글 개수 가져오기
+                    let time = response['time'] //작성시간 가져오기 (년월일 시)
+
+                    $('#num_comments').text(number + ' ' + 'Replies') // 댓글 개수 붙히기
+
+                    // 기사 제목을 상단에 붙히고 클릭 시 다른 창에 해당 기사를 띄워준다.
+                    $('#title').text(" [뉴스] " + response['title'])
+                    $('#title').click(function (e) {
+                        e.preventDefault();
+                        let url = response['url']
+                        window.open(url, "_blank");
+                    })
+                    // let image = response['image']
+                    // $('#wordcloud_image').append(`<image src = ${image}></image>`)
+
+
+
+                    let label = []
+                    let time_val = ['작성개수']
+
+                    for (let i = 0; i < time.length; i++) {
+                        let tmp = time[i][0]
+                        label.push(tmp.substring(0,4)+"."+tmp.substring(4,6)+"."+tmp.substring(6,8)+" "+tmp.substring(8,10)+"시")
+                        time_val.push(time[i][1])
+
+                    }
+
+                    draw_area(label,time_val)
+
+                    let temp_image=`<image src="/static/assets/wordcloud.png" style="position:absolute; width:600px; height:auto;
+                                     "></image>`
+                    $('#wordcloud_image').append(temp_image);
+
+                }
+            });
+        }
+
+    </script>
+
+
+</head>
+<body>
+<script>
+    var check = $("input[type='checkbox']");
+    check.click(function(){
+	    $("p").toggle();
+    });
+</script>
+
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand title" href="#!">베댓 &nbsp;<span class = "subtitle">-&nbsp;영화 리뷰</span></a>
+        <div class="help-tip" style="z-index:1;">
+            <p>댓글/리뷰 분석 사이트인 "베댓"을 이용해주셔서 감사합니다.<br>영화 분석 시 제공하는 것들
+                <br>-기타등등 설명들!</p>
+        </div>
+    </div>
+</nav>
+<main class="main users chart-page" id="skip-target">
+    <div class="container_2">
+        <h2 class="main-title dohyeon_title">리뷰 분석 결과 &nbsp; &nbsp;<span style="font-size:0.7em;" id="title">
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round"></span>
+            </label>
+            <p>스포일러 포함 OFF</p><p style="display:none;">스포일러 포함 ON</p>
+        </span>
+        </h2>
+<!--        성별 분포 및 나이 분포-->
+        <div class="row stat-cards">
+<!--            성별 분포-->
+            <div class="col-md-6 col-xl-8">
+                <article class="stat-cards-item">
+                    <div class="container_2">
+                        <h4 style="margin-bottom:20px;">성별∙나이별 만족도</h4>
+                        <div class="row" style="justify-content:center; align-items:center; display:flex;">
+                            <div class="sex"></div>
+                            <a class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                               id="sex_ratio"></a>
+                        </div>
+                    </div>
+                </article>
+            </div>
+<!--            나이 분포-->
+            <div class="col-md-6 col-xl-4">
+                <article class="stat-cards-item">
+                    <div class="container_2">
+                        <h4 style="margin-bottom:20px;">감상 포인트</h4>
+                        <div id="barchart" style="height:300px;"></div>
+
+                    </div>
+
+                </article>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top:100px;">
+            <div class="col-lg-5">
+                <div class="white-block" style="height:640px; margin-left:5px;">
+                    <h4 style="margin-bottom:20px;">댓글 작성 시간 분포 </h4>
+                    <br>
+                    <div id="areachart"></div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="white-block" style="height:640px; margin-left:5px">
+                    <h4 style="margin-bottom:20px;">워드 클라우드</h4>
+                    <br>
+                    <div id="wordcloud_image"></div>
+                </div>
+            </div>
+            <div class="col-lg-3">
+                    <article class="white-block">
+                    <div class="top-cat-title">
+                            <h3>본 영화 리뷰 토픽</h3>
+                            <p id="num_comments">1400 Replies</p>
+                        </div>
+                        <ul class="top-cat-list">
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Lifestyle <span class="purple">8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Daily lifestyle articles <span class="purple">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Tutorials <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Coding tutorials <span class="blue">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Technology <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Dailiy technology articles <span class="danger">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        UX design <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        UX design tips <span class="success">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Interaction tips <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Interaction articles <span class="warning">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        App development <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Mobile development articles <span class="warning">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Nature <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Wildlife animal articles <span class="warning">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Geography <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Geography articles <span class="primary">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Geography <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Geography articles <span class="primary">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a>
+                                    <div class="top-cat-list__title">
+                                        Geography <span>8.2k</span>
+                                    </div>
+                                    <div class="top-cat-list__subtitle">
+                                        Geography articles <span class="primary">+472</span>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </article>
+                </div>
+        </div>
+
+    </div>
+</main>
+</body>
+</html>

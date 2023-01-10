@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>베댓 - 댓글 분석 프로젝트</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../static/style02.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+    <link href="css/demo.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/SRC2/jbar/jqbar.css"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.18/c3.min.css"/>
+
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+
+
+    <style type="text/css">
+
+
+    </style>
+
+    <script>
+        var colors = ['#D9C7D2', '#C5A2BC', '#506358', '#88A185', '#CAD2B8', '#E2E3CE']
+
+        $(document).ready(function () {
+            get_statics();
+            contention();
+        });
+
+        //파이차트1 여자
+        function color1(i) {
+            $(".sex").css({
+                "background": "conic-gradient(#debcbb 0% " + i + "%, #ffffff " + i + "% 100%)"
+
+            });
+        }
+        //파이차트2 남자
+        function color2(i) {
+            $(".sex").css({
+                "background": "conic-gradient(#debcbb 0% 25%, #c0cdd3 25% " + i + "%, #ffffff " + i + "% 100%)"
+
+            });
+        }
+
+        // 기술통계 (성별, 나이별) 를 서버로부터 가져오고 파이차트와 바차트를 그리는 함수
+        function get_statics() {
+
+            let des = {}
+
+            $.ajax({
+                type: "GET",
+                url: "/api/statics",
+                data: {},
+                success: function (response) { // 성공하면
+                    des = response
+                    // 기술통계 파트를 딕셔너리 형태로 가져온뒤, 각 파트에 맞게 %를 떼고 str->int로 변경
+                    let male = Number(des['남성 비율'].slice(0, -1));
+                    let female = Number(des['여성 비율'].slice(0, -1));
+                    let _10 = Number(des['10대 비율'].slice(0, -1));
+                    let _20 = Number(des['20대 비율'].slice(0, -1));
+                    let _30 = Number(des['30대 비율'].slice(0, -1));
+                    let _40 = Number(des['40대 비율'].slice(0, -1));
+                    let _50 = Number(des['50대 비율'].slice(0, -1));
+                    let _60 = Number(des['60대 이상'].slice(0, -1));
+
+                    // 댓글 작성자 성별 비율 파이차트를 그린다
+                    draw_pie(male)
+
+                    // 남녀 비율이 각 몇 퍼센트인지 표시해준다.
+                    $('#sex_ratio').append(`
+                                    <div class='box male'></div> &nbsp;남 ${male}%
+                                    <br></br>
+                                    <div class='box female'></div>&nbsp;여 ${female}%`)
+
+                    draw_bar(_10, _20, _30, _40, _50, _60)
+
+                    set_react(70)
+
+                }
+            });
+        }
+
+        // 나이 분포 막대그래프를 그리는 함수 (get_statics)
+        function draw_bar(_10, _20, _30, _40, _50, _60) {
+            c3.generate({
+                    bindto: '#barchart',
+                    data: {
+                        columns: [
+                            ['%', _10, _20, _30, _40, _50, _60]
+                        ],
+                        type: 'bar',
+                        color: function (color, d) {
+                            return colors[d.index];
+                        }
+                    },
+                    bar: {
+                        width: {
+                            ratio: 0.4
+                        }
+                    },
+                    axis: {
+                        x: {
+                            type: 'category',
+                            categories: ['10대', '20대', '30대', '40대', '50대', '60대 이상']
+                        },
+                        y: {
+                            max: 100,
+                            min: 0,
+                            padding: {
+                                top: 0,
+                                bottom: 0
+                            },
+                            tick: {
+                                count: 6
+                            }
+                        }
+                    },
+                    tooltop: {
+                        show: false
+                    },
+                    legend: {
+                        show: false
+                    },
+                    padding: {
+                        bottom: 20,
+                        top: 20
+                    }
+                }
+            );
+        }
+
+        // 댓글 작성 시간 분포도를 그리는 함수 (contention)
+        function draw_area(label, time_val) {
+            c3.generate({
+                bindto: "#areachart",
+                data: {
+                    columns: [
+                        time_val
+                    ],
+                    type:'area-spline'
+
+                },
+                legend:{
+                    position:'right'
+                },
+                axis: {
+                        x: {
+                            type:'category',
+                            categories: label
+                        }
+                    },
+                tooltop: {
+                        show: false
+                    },
+                color:{
+                    pattern:['#6C8184']
+                }
+            });
+        }
+
+        // 성별 분포 파이차트를 그리는 함수 (get_statics)
+        function draw_pie(male) {
+            var i = 1;
+            var func1 = setInterval(function () {
+                if (i < male) {
+                    color1(i);
+                    i++;
+                } else if (i < 101) {
+                    color2(i);
+                    i++;
+                } else {
+                    clearInterval(func1);
+                }
+            }, 10);
+        }
+
+        // 긍정 - 부정 수치 그래프를 그리는 함수
+        // set_react: 긍정 부정 퍼센테이지 80% 긍정일 경우 --> set_react(80) 세팅
+        function set_react(skills) {
+            (function ($) {
+                "use strict";
+                $(function () {
+                    function animated_contents() {
+                        $(".zt-skill-bar > div ").each(function (i) {
+                            var $this = $(this);
+                            // skills = $this.data('width');
+
+                            $this.css({'width': skills + '%'});
+
+                        });
+                    }
+
+                    if (jQuery().appear) {
+                        $('.zt-skill-bar').appear().on('appear', function () {
+                            animated_contents();
+                        });
+                    } else {
+                        animated_contents();
+                    }
+                });
+            }(jQuery));
+        }
+
+        //논란수치로 논란이 되는 댓글 4개 붙이는 함수 + 댓글 개수를 가져와서 '본 뉴스 댓글 토픽' 파트 밑에 붙이는 함수
+        //뉴스 타이틀을 가져오고 타이틀 클릭 시 새창에 해당 뉴스
+        // 작성시간 분포 그래프
+        function contention() {
+            $.ajax({
+                type: "GET",
+                url: "/api/contention",
+                data: {},
+                success: function (response) { // 성공하면
+                    let reply = response['contention_reply'] //논란수치순으로 정렬한 댓글 가져오기
+                    let number = response['number'] //댓글 개수 가져오기
+                    let time = response['time'] //작성시간 가져오기 (년월일 시)
+                    let percent = response['percent']
+                    let temp_good = response['good']
+                    let temp_bad = response['bad']
+
+                    set_react(percent)
+                    $('#num_comments').text(number + ' ' + 'Replies') // 댓글 개수 붙히기
+
+                    // 기사 제목을 상단에 붙히고 클릭 시 다른 창에 해당 기사를 띄워준다.
+                    $('#title').text(" [뉴스] " + response['title'])
+                    $('#title').click(function (e) {
+                        e.preventDefault();
+                        let url = response['url']
+                        window.open(url, "_blank");
+                    })
+                    // let image = response['image']
+                    // $('#wordcloud_image').append(`<image src = ${image}></image>`)
+
+
+                    //논란이 되는 댓글 붙이기 (상위 4개)
+                    for (let i = 0; i < 4; i++) {
+                        if (i == 0) {
+                            $('#contention_reply').empty();
+                        }
+                        let contents = reply[i]['댓글내용'] // 댓글 내용 가져오기
+                        contents = contents.replace(/\\n/g, " "); // 만약 \n이 있다면 공백으로 치환
+                        if (contents.length > 130) {
+                            contents = contents.substring(0, 130) + "..."
+                        } // 150글자가 넘으면 잘라준다.
+
+                        let good = reply[i]['공감수'] // 공감수
+                        let bad = reply[i]['비공감수'] // 비공감수
+                        let m_time = reply[i]['작성시간'] //작성시간
+                        let date = m_time.split('T')[0] // 작성시간의 년월일
+                        date = date.substring(1, date.length) // 맨 앞의 " 떼기
+                        let time = m_time.split('T')[1] // 작성시간의 시분초
+                        time = time.substring(0, time.length - 6) // 맨 마지막의 +0900 떼기
+
+                        let val = parseFloat(reply[0]['논란수치']) // 논란수치 가져오기
+
+                        //논란이 일어나는 댓글일 경우
+                        let temp_html01 = `<div class="col-md-6 col-xl-3" style="height:252px;">
+                                                <article class="stat-cards-item">
+
+                                                    <div class="stat-cards-info">
+                                                        <p class="stat-cards-info__num" style="margin-bottom:10px; font-size:1em;">${contents}</p>
+
+                                                        <p class="stat-cards-info__progress">
+                                                            <span class="stat-cards-info__profit success">
+                                                                 <i data-feather="trending-up" aria-hidden="true"></i>:) ${good}&nbsp; :( ${bad}
+
+                                                             </span>
+                                                             &nbsp;
+                                                            ${date + " " + time}
+                                                        </p>
+                                                    </div>
+                                                </article>
+                                            </div>`
+
+                        // 논란이 일어나는 댓글이 없을 경우
+                        let temp_html02 = `<div class="col-md-6 col-xl-3" style="height:252px;">
+                                                <article class="stat-cards-item">
+
+                                                    <div class="stat-cards-info">
+                                                        <p class="stat-cards-info__num" style="margin-bottom:10px; font-size:1em;">논란 중인 댓글이 없습니다.</p>
+
+                                                        <p class="stat-cards-info__progress">
+                                                            <span class="stat-cards-info__profit success">
+                                                                 <i data-feather="trending-up" aria-hidden="true"></i><br>
+
+                                                             </span>
+
+                                                        </p>
+                                                    </div>
+                                                </article>
+                                            </div>`
+
+                        if (val == 0) { // 논란수치가 0일경우 "논란중인 댓글이 없습니다"를 가진 카드를 붙혀준다.
+                            $('#contention_reply').append(temp_html02)
+                        } else { // 논란수치가 0이 아닐경우 댓글 내용, 공감수, 비공감수, 댓글 작성 시간을 가진 카드를 붙혀준다.
+                            $('#contention_reply').append(temp_html01)
+                        }
+                    }
+
+                    let label = []
+                    let time_val = ['작성개수']
+
+                    for (let i = 0; i < time.length; i++) {
+                        let tmp = time[i][0]
+                        label.push(tmp.substring(0,4)+"."+tmp.substring(4,6)+"."+tmp.substring(6,8)+" "+tmp.substring(8,10)+"시")
+                        time_val.push(time[i][1])
+
+                    }
+
+                    draw_area(label,time_val)
+
+                    let temp_image=`<image src="/static/assets/wordcloud.png" style="position:absolute; width:600px; height:auto;
+                                     "></image>`
+                    $('#wordcloud_image').append(temp_image);
+
+
+                    let top10 = response['top10']
+
+                    for(let i = 0; i<10;i++){
+
+                        let name = top10[i]['noun']
+                        let number = top10[i]['n']
+                        let temp_html =``
+                        if(i < 3){
+                            temp_html = `<li>
+                            <a>
+                                <br>
+                                <div class="top-cat-list__title">
+                                     ${name}<span class="purple">${number}</span>
+                                </div>
+
+                            </a>
+                        </li>`
+                        }
+                        else if (i<5){
+                             temp_html = `<li>
+                            <a>
+                                <br>
+                                <div class="top-cat-list__title">
+                                     ${name}<span class="blue">${number}</span>
+                                </div>
+
+                            </a>
+                        </li>`
+                        }
+                        else if (i < 7){
+                            temp_html = `<li>
+                            <a>
+                                <br>
+                                <div class="top-cat-list__title">
+                                     ${name}<span class="success">${number}</span>
+                                </div>
+
+                            </a>
+                        </li>`
+                        }
+                        else if (i < 9){
+                            temp_html = `<li>
+                            <a>
+                                <br>
+                                <div class="top-cat-list__title">
+                                     ${name}<span class="warning">${number}</span>
+                                </div>
+
+                            </a>
+                        </li>`
+                        }
+                        else{
+                            let temp_html = `<li>
+                            <a>
+                                <br>
+                                <div class="top-cat-list__title">
+                                     ${name}<span class="danger">${number}</span>
+                                </div>
+
+                            </a>
+                        </li>`
+                        }
+
+                        $('#topic_list').append(temp_html);
+                    }
+
+                    let good_list = ""
+                    let temp=""
+                    for(let i = 0; i < temp_good.length;i++){
+                        temp = temp_good[i]
+                        good_list += " # "+temp
+                    }
+
+                    let bad_list = ""
+                    for(let i = 0; i <temp_bad.length;i++){
+                        temp = temp_bad[i]
+                        bad_list += " # "+temp
+                    }
+
+                    $('#good_topic').html(good_list)
+                    $('#bad_topic').html(bad_list)
+                }
+            });
+        }
+
+        // <div className="top-cat-list__subtitle">
+        //     Daily lifestyle articles <span className="purple">+472</span>
+        // </div>
+        //논란이 일어나는 댓글들 로딩창
+        $(window).load(function () {
+            $(".loader").delay("1000").fadeOut();
+        });
+
+
+    </script>
+</head>
+
+<body>
+<!--javascript-->
+
+
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand title">베댓 &nbsp;<span class="subtitle">-&nbsp;뉴스 댓글</span></a>
+        <div class="help-tip" style="z-index:1;">
+            <p>댓글/리뷰 분석 사이트인 "베댓"을 이용해주셔서 감사합니다.<br>뉴스 댓글 분석 시 제공하는 것들
+                <br>-기타등등 설명들!</p>
+        </div>
+    </div>
+</nav>
+<main class="main users chart-page" id="skip-target" style="background-color:rgba(255,240,245,0.5)">
+    <div class="container_2">
+        <h2 class="main-title dohyeon_title">댓글 분석 결과 &nbsp; &nbsp;<span style="font-size:0.7em;" id="title"></span>
+        </h2>
+
+<!--        성별 분포 및 나이 분포-->
+        <div class="row stat-cards">
+<!--            성별 분포-->
+            <div class="col-md-6 col-xl-4">
+                <article class="stat-cards-item">
+                    <div class="container_2">
+                        <h4 style="margin-bottom:20px;">성별 분포</h4>
+                        <div class="row" style="justify-content:center; align-items:center; display:flex;">
+                            <div class="sex"></div>
+                            <a class="gamja_flower" style="padding-top:120px; margin-left:20px; font-size:20px;"
+                               id="sex_ratio"></a>
+
+
+                        </div>
+                    </div>
+                </article>
+            </div>
+<!--            나이 분포-->
+            <div class="col-md-6 col-xl-8">
+                <article class="stat-cards-item">
+                    <div class="container_2">
+                        <h4 style="margin-bottom:20px;">나이 분포</h4>
+                        <div id="barchart" style="height:300px;"></div>
+
+                    </div>
+
+                </article>
+            </div>
+
+        </div>
+<!--        긍정-부정 분석 결과 및 논란이 일어나는 댓글들-->
+        <div class="row" style="margin-top:100px;">
+            <div class="col-lg-9" style="height:400px;">
+
+<!--                긍정-부정 분석결과-->
+                <div class="white-block good_bad">
+                    <h4 style="margin-bottom:20px;">긍정-부정</h4>
+                    <br>
+                    <br>
+                    <div class="zt-skill-bar dohyeon_title" style="position:relative;">
+                        <span style="margin-left:1020px; position:absolute; font-size:1.5em; padding-top:5.5px;">부정</span>
+                        <div data-width="50" style="height:35px;" id="good">긍정</div>
+
+                    </div>
+                    <br>
+                    <div style="position:relative;">
+                        <div style="position:absolute;">
+                            <span id="good_topic">#긍정토픽1 #긍정토픽2 #긍정토픽3</span>
+                        </div>
+                        <div style="text-align:right;">
+                            <span id="bad_topic">#부정토픽1 #부정토픽2 #부정토픽3</span>
+                        </div>
+
+
+                    </div>
+
+
+                </div>
+<!--                논란이 일어나는 댓글들-->
+                <h2 class="dohyeon_subtitle" style="text-align:center">논란이 일어나는 댓글들</h2>
+                <div class="row stat-cards" style="margin-top:20px;" id="contention_reply">
+                    <div class="loader" style="margin-left:50%; margin-top:150px;"></div>
+
+
+                </div>
+            </div>
+<!--            댓글의 토픽 리스트-->
+            <div class="col-lg-3">
+                <article class="white-block">
+                    <div class="top-cat-title">
+                        <h3>본 뉴스 댓글 토픽</h3>
+                        <p id="num_comments">1400 Replies</p>
+                    </div>
+                    <ul class="top-cat-list" id="topic_list">
+
+
+
+
+                    </ul>
+                </article>
+            </div>
+        </div>
+
+    </div>
+<!--    작성 시간 분포도 및 워드 클라우드-->
+    <div class="white-block container_2" style="margin-top:350px; height:400px;">
+        <div class="row">
+<!--            작성시간 분포도-->
+            <div class="col-xl-7">
+                <h4 style="margin-bottom:20px;">댓글 작성 시간 분포</h4>
+                <div id="areachart"></div>
+
+
+            </div>
+<!--            워드 클라우드-->
+            <div class="col-xl-5" id="wordcloud_image" style="overflow:hidden; positon:relative;">
+                <h4 style="margin-bottom:20px; position:absolute;  z-index:1;">워드 클라우드</h4>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+</body>
+</html>

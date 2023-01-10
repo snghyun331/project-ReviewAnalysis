@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>베댓 - 댓글 분석 프로젝트</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+
+    <!-- fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Gamja+Flower&display=swap" rel="stylesheet">
+
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link rel="stylesheet" type="text/css" href="style01.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+    <link href="css/demo.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="/SRC2/jbar/jqbar.css"/>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.18/c3.min.css"/>
+
+
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.11/c3.min.js"></script>
+
+
+    <script>
+<!--  수정중입니다 . -->
+
+    </script>
+</head>
+
+<body>
+<!--javascript-->
+
+
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand title">베댓 &nbsp;<span class="subtitle">-&nbsp;쇼핑 리뷰</span></a>
+        <div class="help-tip" style="z-index:1;">
+            <p>댓글/리뷰 분석 사이트인 "베댓"을 이용해주셔서 감사합니다.<br>쇼핑 리뷰 분석 시 제공하는 것들
+                <br> 설명</p>
+        </div>
+    </div>
+</nav>
+<main class="main users chart-page" id="skip-target">
+    <div class="container_2">
+        <h2 class="main-title dohyeon_title">댓글 분석 결과 &nbsp; &nbsp;<span style="font-size:0.7em;" id="title"></span>
+        </h2>
+
+
+        <div class="row stat-cards">
+
+            <!--        사용자 총평점 및 전체 리뷰수 -->
+
+            <div class="col-xl-3">
+                <article class="stat-cards-item" style="width: 350px; height:390px;">
+                    <!--  사용자 총 평점-->
+                    <div class="container_2">
+                        <h4 style="margin-bottom:10px;"> 총 리뷰 갯수 </h4>
+                        <div class="row"
+                             style="justify-content:center; align-items:center; display:flex; height: 80px;">
+                            <div class="sex" style="height: 80px;"></div>
+                            <a class="gamja_flower" style="padding-top:120px; font-size:20px;"
+                               id="all_users_score"></a>
+                        </div>
+                    </div>
+
+                    <!-- 전체 리뷰수 -->
+                    <div class="container_2">
+                        <h4 style="margin-bottom:10px;"> 사용자 총 평점</h4>
+                        <div class="row"
+                             style="justify-content:center; align-items:center; display:flex; height: 80px;">
+                            <div class="review" style="height: 80px;"></div>
+                            <a class="gamja_flower" style="padding-top:120px; font-size:20px;"
+                               id="all_reviews"></a>
+
+                        </div>
+                    </div>
+
+                    <div class="container_2">
+                        <h4 style="margin-bottom:10px;"> 재구매율 </h4>
+                        <div class="row"
+                             style="justify-content:center; align-items:center; display:flex; height: 80px;">
+                            <div class="buy" style="height: 80px;"></div>
+                            <a class="gamja_flower" style="padding-top:120px; font-size:20px;"
+                               id="sales"></a>
+
+                        </div>
+                    </div>
+                </article>
+            </div>
+
+
+            <!--   각 주제별 평점 -->
+            <article class="stat-cards-item" style="width:450px; margin-left:30px; height:390px; justify-content:center; align-items:center;
+                display:flex;">
+                <div class="container_2">
+                    <h4 style="margin-bottom:20px;">각 토픽별 평점 </h4>
+                    <div id="topics" style="height:300px;"></div>
+
+                </div>
+            </article>
+
+            <article class="stat-cards-item" style="width:450px; margin-left:30px; height:390px; justify-content:center; align-items:center;
+                display:flex;">
+                <div class="container_2">
+                    <h4 style="margin-bottom:20px;">각 제품/옵션별 평점 </h4>
+                    <div id="per_score" style="height:300px;"></div>
+
+                </div>
+            </article>
+
+
+        </div>
+
+
+        <!--       토픽분석결과 -->
+        <div class="row" style="margin-top:100px;">
+            <div class="col-lg-9">
+
+                <!--     분석결과-->
+                <div class="white-block" style="height:630px; margin-left:5px;">
+                    <h4 style="margin-bottom:20px;"> 토픽 분석 : 주제별 리뷰 </h4>
+                    <br>
+
+                    <div class="row">
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic1">#토픽1</span>
+                                <div class="words">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic2">#토픽2</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic3">#토픽3</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic4">#토픽4</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic5">#토픽5</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic6">#토픽6</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic7">#토픽7</span>
+                            </div>
+                        </div>
+
+                        <div class="col-xl-3"
+                             style="overflow:hidden; positon:relative; height:250px;">
+                            <div class="container_2">
+                                <span id="topic8">#토픽8</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!--            댓글의 토픽 리스트-->
+            <div class="col-lg-2">
+                <article class="white-block">
+                    <div class="top-cat-title">
+                        <h3> 제품/옵션별 구매 순위</h3>
+                        <p id="comments"> 제품명, 누적구매량 </p>
+                    </div>
+                    <ul class="top-cat-list">
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    A옵션 <span class="purple"> 4.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="purple">+672</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    B옵션 <span>2.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="blue">+572</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    C옵션 <span>1.0k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="danger">+472</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    D옵션 <span>0.8k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="success">+372</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    E 옵션 <span>0.6k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="warning">+272</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    F 옵션 <span>0.5k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="warning">+393</span>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    G 옵션 <span>0.2k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="warning">+272</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    H 옵션 <span>0.1k</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="primary">+122</span>
+                                </div>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a>
+                                <div class="top-cat-list__title">
+                                    I 옵션 <span>0.6m</span>
+                                </div>
+                                <div class="top-cat-list__subtitle">
+                                    최근 1달 구매량 <span class="primary">+62</span>
+                                </div>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </article>
+            </div>
+        </div>
+
+    </div>
+
+    <!--    작성 시간 분포도 및 워드 클라우드-->
+    <div class="col-lg-11" style="margin-left:25px">
+        <div class="white-block container_2" style="margin-top:350px; height:400px;">
+            <div class="row">
+                <!--            작성시간 분포도-->
+                <div class="col-xl-7">
+                    <h4 style="margin-bottom:20px;">댓글 작성 시간 분포</h4>
+                    <div id="areachart"></div>
+
+
+                </div>
+                <!--            워드 클라우드-->
+                <div class="col-xl-5" id="wordcloud_image" style="overflow:hidden; positon:relative;">
+                    <h4 style="margin-bottom:20px; position:absolute;  z-index:1;">워드 클라우드</h4>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

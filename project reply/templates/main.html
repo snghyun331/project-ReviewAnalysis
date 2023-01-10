@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+
+
+<head>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>베댓 - 댓글 분석 프로젝트</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="../static/styles.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+
+    <style type="text/css">
+
+
+    </style>
+
+    <script>
+
+        //처음 들어가거나 새로고침을 하게 되면 바로 실행!
+        // 분석 글, 댓글 개수(0) + 핫이유 기사 출력(0) + 베댓의 화제 토픽(X아직)
+        $(document).ready(function () {
+            setting_count(); // 새로고침을 누를때마다 실행 (분석한 글, 댓글 개수 출력)
+            setting_issue(); // 핫이슈 기사 출력
+            setting_topic();
+        });
+
+        // 처음 들어갔을때 분석한 글, 댓글 개수를 출력해서 보여주도록하는 함수
+        //get (/api/reply)
+        function setting_count() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/reply',
+                data: {},
+                success: function (response) {
+                    let numbers = response['result_count']
+                    let article_num = numbers[0]['article']
+                    let reply_num = numbers[0]['reply']
+                    // articleCountTxt = article_num
+
+                    $('#num_article').text(article_num + "개")
+                    $('#num_reply').text(reply_num + "개")
+
+                }
+            });
+        }
+
+        // 핫이슈 기사를 가져와서 보여주도록하는 함수
+        // get (/api/issue)
+        function setting_issue() {
+            $.ajax({
+                type: 'GET',
+                url: '/api/issue',
+                data: {},
+                success: function (response) {
+                    let lists = response['hot_issue']
+                    for (let i = 0; i < lists.length; i++) {
+                        if (i == 0) {
+                            div = document.getElementById('issue_loading');
+                            div.remove();
+                        }
+                        let title = "  " + lists[i]['title']
+                        let src = lists[i]['src']
+
+                        let temp_html = `<p>${i + 1}.&nbsp;&nbsp;<a href = "${src}" style="text-decoration:none" class="glanlink">${title}</a></p>`
+                        $('#issue_class').append(temp_html)
+                    }
+                }
+            });
+        }
+
+        // 화제 토픽을 가져와서 보여주도록하는 함수
+        // get (/api/hot_topic)
+        function setting_topic() {
+            // $.ajax({
+            //     type: 'GET',
+            //     url: '/api/hot_topic',
+            //     data: {},
+            //     success: function (response) {
+            //
+            //         let topic_list = response['hot_topic'] //토픽 리스트를 가져온다
+            //         for(let i = 0; i < 5; i++){
+            //            if(i == 0){
+            //               div = document.getElementById('topic_loading');
+            //               div.remove();
+            //            }
+            //
+            //            let topic = topic_list[i]['topic']
+            //            let temp_html = `<p>${i + 1}.&nbsp;&nbsp;${topic}</p>`
+            //            $('#topic_class').append(temp_html)
+            //        }
+            //     }
+            // });
+        }
+
+        // 사용자가 입력한 url을 서버로 보내주는 함수
+        //post (/check)
+        function give_url() {
+            let url = $('#urlAddress').val()
+            let new_check =$('#clean_check').is(":checked")
+            let cleanbot = ""
+            let spoiler = ""
+            if (new_check == true){
+                cleanbot = "true"
+            }
+            else{
+                cleanbot="false"
+            }
+            let movie_check = $('#spo_check').is(":checked")
+            if (movie_check == true){
+                spoiler = "true"
+            }
+            else{
+                spoiler="false"
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/check",
+                data: {url_give: url, news: cleanbot,spo: spoiler},
+                success: function (response) { // 성공하면
+                    let code = response['valid']
+
+                    //유효하지 않은 url에 대해서는 에러 메시지를 alert한다.
+                    if (code == 0) {
+                        alert("네이버 뉴스, 스마트 스토어, 영화에 대해서만 서비스 합니다.")
+                    } else if (code == 2) {
+                        alert("요청한 페이지를 찾을 수 없습니다.")
+                    } else if (code == 3) {
+                        alert("권한이 없어 접근할 수 없습니다.")
+                    } else if (code == 4) {
+                        alert("웹 서버의 오류로 페이지가 제공되지 않습니다.")
+                    }
+
+                    let classify = response['kind']
+
+                    //잘못된 url
+                    if (classify == -1) {
+                        window.location.reload()
+                    }
+                    //뉴스
+                    else if (classify == 0) {
+                        location.href = '/news_result'
+                    }
+                    //상품 후기
+                    else if (classify == 1) {
+                        location.href = '/shopping_result'
+                    }
+                    //영화 리뷰
+                    else {
+                        location.href = '/movie_result'
+                    }
+                }
+            })
+        }
+
+        function settingbtn() {
+            var chk = document.getElementById('setting_btn');
+            var box = document.getElementById('setting_box');
+
+            if (box.style.display == 'none') {
+                box.style.display = 'block';
+                return false;
+            }
+
+
+        }
+// $('#clean_check').is(":checked")
+        function settingclose() {
+            var box = document.getElementById('setting_box');
+            if (box.style.display != 'none') {
+                box.style.display = 'none';
+                return false;
+            }
+        }
+
+    </script>
+</head>
+<body>
+<!-- Navigation-->
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand title" href="#!">베댓</a>
+        <div class="settings">
+            <button type="button" id="setting_btn" onClick="settingbtn()"><img src="../static/assets/img/settings.png"
+                                                                                style="height:27px;" alt=""></button>
+            <p class="arrow_box">설정</p>
+            <div style="display:none; width:300px; background-color:white; height:300px; position:absolute; z-index:1; right:10px; top:50px;
+                   border-radius:20px 20px 20px 20px; border:1px solid dimgray; box-shadow: 0px 0px 5px gray; text-align:center;"
+                 id="setting_box">
+                <button type="button" id="close_btn" onClick="settingclose()" style="float:right; margin:5px;"><img
+                        src="../static/assets/img/cancel.png" style="height:15px;"></button>
+                <a style="position:absolute; margin-top:15px; font-size:25px; font-family: 'Do Hyeon', sans-serif;">설정</a>
+                <br>
+                <br>
+                <hr>
+                <div style="margin-top:20px;">
+                    <p style="font-family: 'Noto Sans KR', sans-serif;  font-size:18px; " >뉴스-클린봇 활성</p>
+                    <label class="switch">
+                        <input type="checkbox" id="clean_check" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+                <div style="margin-top:20px;">
+                    <p style="font-family: 'Noto Sans KR', sans-serif;  font-size:18px; " id="spo_check">영화-스포일러 포함</p>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+
+            </div>
+
+        </div>
+        <div class="help-tip" style="z-index:1;">
+            <p>댓글/리뷰 분석 사이트인 "베댓"을 이용해주셔서 감사합니다.
+                <br> 본 페이지는 2021 한이음 공모전의 베댓팀의 프로젝트로 만들어졌습니다.
+                <br>
+                <br> - 네이버 뉴스 댓글/ 네이버 스마트스토어 리뷰 / 네이버 영화 리뷰 분석을 지원합니다. (지원 페이지는 추후 추가할 예정입니다.)
+                <br>
+                <br>사용 방법 : URL 입력 페이지에 입력한 후 enter 버튼을 눌러주세요.
+                <br>
+                <br>**입력하신 페이지의 댓글 혹은 리뷰를 가져오고, 분석을 진행하기에 몇 분의 소요시간이 걸릴 수 있습니다.**</p>
+        </div>
+    </div>
+
+</nav>
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <!-- Page heading-->
+                    <h2 class="mb-5">분석하고자 하는 url을 입력해주세요.</h2>
+                    <form class="form-subscribe" id="contactForm" data-sb-form-api-token="API_TOKEN">
+
+                        <div class="row">
+                            <div class="col">
+                                <input type="text" class="form-control form-control-lg" id="urlAddress"
+                                       aria-label="Default" aria-describedby="inputGroup-sizing-default"
+                                       placeholder="url 입력"/>
+
+                            </div>
+                            <div class="col-auto">
+                                <!--                                <a href="/result" class="card-link">Get Tickets</a>-->
+                                <button class="btn btn-primary btn-lg" id="submitButton" onclick="give_url();">Enter
+                                </button>
+                            </div>
+                        </div>
+                        <!-- Submit success message-->
+
+                        <div class="d-none" id="submitSuccessMessage">
+
+                        </div>
+                        <!-- Submit error message-->
+                        <!---->
+                        <!-- This is what your users will see when there is-->
+                        <!-- an error submitting the form-->
+                        <div class="d-none" id="submitErrorMessage">
+                            <div class="text-center text-danger mb-3">Error sending message!</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Icons Grid-->
+
+<section class="features-icons text-center">
+    <div class="container">
+
+        <div class="col-lg-4 set_result">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                <div class="features-icons-icon"><img class="img-size" src="../static/assets/img/newspaper.png"></div>
+                <h3>베댓이 분석한 전체 글</h3>
+                <p class="lead mb-0" id="num_article">10개</p>
+            </div>
+        </div>
+        <div class="col-lg-4 set_result">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                <div class="features-icons-icon"><img class="img-size" src="../static/assets/img/chat.png"></div>
+                <h3>베댓이 분석한 전체 댓글</h3>
+                <p class="lead mb-0" id="num_reply">20개</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+<section class="showcase bg-light">
+
+    <div class="container-fluid p-0">
+        <hr>
+        <div class="row g-0">
+            <div class="col-lg-4 order-lg-1 my-auto showcase-text">
+                <span style="font-size:1.7em; font-weight:bold;">베댓의 화제 토픽</span>
+                <hr>
+                <!--                <div class="loading" id = "topic_loading">-->
+                <!--                    <span style="padding-left:70px;"></span>-->
+                <!--                    <span style="font-size:1.7em;">L</span>-->
+                <!--                    <span style="font-size:1.7em;">O</span>-->
+                <!--                    <span style="font-size:1.7em;">A</span>-->
+                <!--                    <span style="font-size:1.7em;">D</span>-->
+                <!--                    <span style="font-size:1.7em;">I</span>-->
+                <!--                    <span style="font-size:1.7em;">N</span>-->
+                <!--                    <span style="font-size:1.7em;">G</span>-->
+                <!--                </div>-->
+
+                <div id="topic_class">
+
+                </div>
+
+
+            </div>
+            <div class="col-lg-8 order-lg-1 my-auto showcase-text">
+                <span style="font-size:1.7em; font-weight:bold;">핫이슈 기사 </span>
+                <a>&nbsp; &nbsp;(댓글 기준)</a>
+                <hr>
+                <div class="loading" id="issue_loading">
+                    <span style="padding-left:300px;"></span>
+                    <span style="font-size:1.7em;">L</span>
+                    <span style="font-size:1.7em;">O</span>
+                    <span style="font-size:1.7em;">A</span>
+                    <span style="font-size:1.7em;">D</span>
+                    <span style="font-size:1.7em;">I</span>
+                    <span style="font-size:1.7em;">N</span>
+                    <span style="font-size:1.7em;">G</span>
+                </div>
+                <div id="issue_class">
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- Footer-->
+<footer class="footer bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 h-100 text-center text-lg-start my-auto">
+                <ul class="list-inline mb-2">
+                    <li class="list-inline-item"><a href="#!">오류 신고</a></li>
+                    <li class="list-inline-item">⋅</li>
+                    <li class="list-inline-item"><a href="#!">QnA</a></li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</body>
+</html>

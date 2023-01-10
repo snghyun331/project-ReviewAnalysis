@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <meta name="author" content=""/>
+    <title>베댓 - 댓글 분석 프로젝트</title>
+    <!-- Favicon-->
+    <link rel="icon" type="image/x-icon" href="assets/favicon.ico"/>
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+          type="text/css"/>
+    <!-- Google fonts-->
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+          type="text/css"/>
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link href="css/styles.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap" rel="stylesheet">
+
+    <style type="text/css">
+        .title {
+            font-family: 'Black Han Sans', sans-serif;
+            font-size: 2em;
+            color: #FFBF00;
+        }
+
+        .help-tip {
+
+            position: absolute;
+            top: 18px;
+            right: 18px;
+            text-align: center;
+            background-color: #BCDBEA;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 14px;
+            line-height: 26px;
+            cursor: default;
+        }
+
+        .help-tip:before {
+            content: '?';
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .help-tip:hover p {
+            display: block;
+            transform-origin: 100% 0%;
+            -webkit-animation: fadeIn 0.3s ease-in-out;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .help-tip p {
+            display: none;
+            text-align: left;
+            background-color: #1E2021;
+            padding: 20px;
+            width: 300px;
+            position: absolute;
+            border-radius: 3px;
+            box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2);
+            right: -4px;
+            color: #FFF;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .help-tip p:before {
+            position: absolute;
+            content: '';
+            width: 0;
+            height: 0;
+            border: 6px solid transparent;
+            border-bottom-color: #1E2021;
+            right: 10px;
+            top: -12px;
+        }
+
+        .help-tip p:after {
+            width: 100%;
+            height: 40px;
+            content: '';
+            position: absolute;
+            top: -40px;
+            left: 0;
+        }
+
+        @-webkit-keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.6);
+            }
+
+            100% {
+                opacity: 100%;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+            }
+
+            100% {
+                opacity: 100%;
+            }
+
+        }
+
+        ​
+    </style>
+
+    <script type="text/javascript">
+        function search(){
+            location.href = "result.html";
+        }
+
+    </script>
+</head>
+<body>
+<!-- Navigation-->
+<nav class="navbar navbar-light bg-light static-top">
+    <div class="container">
+        <a class="navbar-brand title" href="#!">베댓</a>
+        <div class="help-tip" style="z-index:1;">
+            <p>여기에는 도움말이 들어간다.<br>ex. 지원 기능, 사용방법 등...</p>
+        </div>
+    </div>
+</nav>
+<!-- Masthead-->
+<header class="masthead">
+    <div class="container position-relative">
+        <div class="row justify-content-center">
+            <div class="col-xl-6">
+                <div class="text-center text-white">
+                    <!-- Page heading-->
+                    <h2 class="mb-5">분석하고자 하는 url을 입력해주세요.</h2>
+                    <form class="form-subscribe" id="contactForm" data-sb-form-api-token="API_TOKEN">
+
+                        <div class="row">
+                            <div class="col">
+                                <input class="form-control form-control-lg" id="emailAddress" type="email"
+                                       placeholder="url 입력" data-sb-validations="required,email"/>
+
+                            </div>
+                            <div class="col-auto">
+                                <button class="btn btn-primary btn-lg" id="submitButton" onclick="search()">Enter</button>
+                            </div>
+                        </div>
+                        <!-- Submit success message-->
+
+                        <div class="d-none" id="submitSuccessMessage">
+
+                        </div>
+                        <!-- Submit error message-->
+                        <!---->
+                        <!-- This is what your users will see when there is-->
+                        <!-- an error submitting the form-->
+                        <div class="d-none" id="submitErrorMessage">
+                            <div class="text-center text-danger mb-3">Error sending message!</div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<!-- Icons Grid-->
+
+<section class="features-icons text-center">
+    <div class="container">
+
+
+        <div class="col-lg-4 set_result">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                <div class="features-icons-icon"><img class="img-size" src="assets/img/newspaper.png"></div>
+                <h3>베댓이 분석한 전체 글</h3>
+                <p class="lead mb-0">10개</p>
+            </div>
+        </div>
+        <div class="col-lg-4 set_result">
+            <div class="features-icons-item mx-auto mb-5 mb-lg-0 mb-lg-3">
+                <div class="features-icons-icon"><img class="img-size" src="assets/img/chat.png"></div>
+                <h3>베댓이 분석한 전체 댓글</h3>
+                <p class="lead mb-0">20개</p>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+
+<section class="showcase bg-light">
+
+            <div class="container-fluid p-0">
+                <hr>
+                <div class="row g-0">
+                    <div class="col-lg-4 order-lg-1 my-auto showcase-text">
+                        <span style="font-size:1.7em; font-weight:bold;">베댓의 화제 토픽</span>
+                        <hr>
+                        <p>1. ....</p>
+                        <p>2. ....</p>
+                        <p>3. ....</p>
+                        <p>4. ....</p>
+                        <p>5. ....</p>
+
+                    </div>
+                    <div class="col-lg-8 order-lg-1 my-auto showcase-text">
+                        <span style="font-size:1.7em; font-weight:bold;">핫이슈 기사</span>
+                        <hr>
+                        <p>1. ....</p>
+                        <p>2. ....</p>
+                        <p>3. ....</p>
+                        <p>4. ....</p>
+                        <p>5. ....</p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+<!-- Footer-->
+<footer class="footer bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 h-100 text-center text-lg-start my-auto">
+                <ul class="list-inline mb-2">
+                    <li class="list-inline-item"><a href="#!">오류 신고</a></li>
+                    <li class="list-inline-item">⋅</li>
+                    <li class="list-inline-item"><a href="#!">QnA</a></li>
+
+                </ul>
+
+            </div>
+
+        </div>
+    </div>
+</footer>
+<!-- Bootstrap core JS-->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Core theme JS-->
+<script src="js/scripts.js"></script>
+
+<script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
+</body>
+</html>
