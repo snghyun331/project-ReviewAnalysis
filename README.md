@@ -9,10 +9,10 @@
 - 필요 정보 찾기의 어려움: 많은 양의 댓글 중 사용자가 자체적으로 선별하여 필요한 정보를 가진 갯글을 찾기가 쉽지 않음, 정보과다 사회에 있어 필요한 정보만을 추출하여 선별적으로 정보에 접근할 수 있음
 - 기존 분석 시스템의 한계: 평점을 중심으로 분석하는 기존의 분석 시스템으로 평점 자체의 신뢰성 문제가 생길 수 있음
 
-# 작품 구성도(아키텍처)
+## 작품 구성도(아키텍처)
 ![그림7](https://user-images.githubusercontent.com/108854903/212528896-9cf57cbf-105e-4298-8c26-d589d8bbedd5.png)
 
-# 작품 결과
+## 작품 결과
 ![그림4](https://user-images.githubusercontent.com/108854903/212528888-ff6eddd4-bea2-40d3-b5fe-1b3f5042773b.png)
 ![그림5](https://user-images.githubusercontent.com/108854903/212528893-fa048e1f-6ea8-4e3c-99b2-4d3b731eb5d6.png)
 ![그림6](https://user-images.githubusercontent.com/108854903/212528894-62e85272-aabe-421d-84bf-619a4f37591c.png)
